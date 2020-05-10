@@ -1,0 +1,31 @@
+<div>
+    <v-subheader>Todo</v-subheader>
+    <v-simple-table class="grey lighten-5">
+        <template v-slot:default>
+            <tbody>
+                <tr v-for="task in tasks">
+                    <td width="1%">
+                        <v-checkbox v-model="task.isCompleted" @change="completeTask(task.isCompleted,task)">
+                        </v-checkbox>
+                    </td>
+                    <td width="89%">
+                        <span :hidden="visible"
+                            :style=" task.isCompleted ? 'text-decoration:line-through' : ''">{{ task.description }}
+                        </span>
+                    </td>
+                    <td width="10%">
+                        <v-btn icon color="grey" @click="editTask" :hidden="visible">
+                            <v-icon> mdi mdi-circle-edit-outline</v-icon>
+                        </v-btn>
+                        <v-btn icon color="grey" @click="removeTask(task.id)" :hidden="visible">
+                            <v-icon>mdi-delete-circle-outline</v-icon>
+                        </v-btn>
+                        <v-btn small text color="grey" @click="saveEditTask(task.id,description)" :hidden="visibleSave">
+                            Save
+                        </v-btn>
+                    </td>
+                </tr>
+            </tbody>
+        </template>
+    </v-simple-table>
+</div>
