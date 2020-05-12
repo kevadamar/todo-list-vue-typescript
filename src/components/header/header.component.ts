@@ -3,9 +3,8 @@ import Component from "vue-class-component";
 
 @Component({})
 export default class HeaderComponent extends Vue {
-  title: string = "todo-list";
+  title: string = "ToDo-List";
 
   mounted() {
-    console.log("hello from app");
   }
 }

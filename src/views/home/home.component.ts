@@ -5,7 +5,6 @@ import Component from 'vue-class-component';
 export default class HomeComponent extends Vue {
 
   mounted (){
-    console.log('hello from app');
   }
   
 }

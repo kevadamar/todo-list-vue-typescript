@@ -2,17 +2,57 @@ import Vue from "vue";
 import Component from "vue-class-component";
 import { Task } from "@/models/Task";
 
+
 @Component({})
 export default class TasksListComponent extends Vue {
+  
   tasks: Array<Task> = new Array<Task>();
-  visible: boolean = false;
-  visibleSave: boolean = true;
   description: string = "";
+  perPage: object = 
+    {
+      itemsPerPage: 5
+    }
+  
+  headers: object[] = [
+    {
+      text: "#",
+      value: "id",
+    },
+    {
+      text: "Description",
+      value: "description",
+    },
+    { 
+      text: "Actions", 
+      value: "actions", 
+      sortable: false 
+    }
+  ];
+  data: object[] = []
+  dialog: boolean = false
+  
+  editedIndex: number = -1;
+  editedItem: object =
+    {
+    description: "",
+    
+    }
+  
+  defaultItem: object =  
+    {
+    description: "",
+    
+    }
+  
 
+  get formTitle() {
+    return this.editedIndex === -1 ? "Edit Item" : "Edit Item";
+  }
+
+  
   mounted() {
-    this.visible;
-    this.visibleSave;
-    this.tasks = this.$store.getters.tasks;
+    this.initialize();
+    
   }
   completeTask(completed: boolean, task: Task) {
     task.isCompleted = completed;
@@ -21,28 +61,63 @@ export default class TasksListComponent extends Vue {
     });
   }
 
-  editTask() {
-    this.visible = true;
-    this.visibleSave = false;
-  }
-
-  saveEditTask(id: string, description: string) {
-    // this.$store.dispatch("saveEditTask");
-    const response = fetch(`https://todo-list-vue-eb646.firebaseio.com/todo`, {
-      method: "GET",
-      mode: "cors", // no-cors, *cors, same-origin
-      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: "same-origin", // include, *same-origin, omit
-      headers: {
-        "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-
-    console.log(response);
-  }
-
   removeTask(id: string) {
     this.$store.dispatch("removeTask", id);
   }
+
+  //merhods table
+
+    initialize() {
+      (async () => {
+         this.data = await this.$store.getters.tasks
+      })();
+    }
+
+    editItem(item: object) {
+      this.editedIndex = this.data.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    }
+
+    deleteItem(item: object) {
+      const index = this.data.indexOf(item);
+      let check = confirm("Are you sure you want to delete this item?")
+      if (check) {
+        let val = ''
+        this.data.forEach(function (object:any,key:number) {
+          if (key === index) {
+            val = object.id
+          }
+        })
+        this.data.splice(index, 1); 
+        this.removeTask(val)
+      }
+    }
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    }
+
+    save() {
+      if (this.editedIndex > -1) {
+        let data = [this.editedItem]
+        let id = '',description = ''
+        Object.assign(this.data[this.editedIndex], this.editedItem);
+        data.forEach(function (object: any, key:number) {
+          id = object.id
+          description = object.description
+        })
+        this.$store.dispatch("editTask",{
+          id:id,
+          description: description
+        })
+      } else {
+        this.data.push(this.editedItem);
+      }
+      this.close();
+    }
 }

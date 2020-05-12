@@ -40,12 +40,16 @@ const Store: StoreOptions<Result<Task[]>> = {
         })
         .catch((err) => console.log(err));
     },
-    editTask(contex, task: Task) {
+    editTask(contex, {id, description}) {
+      let task = {
+        description: description
+      }
       db.collection(collection)
-        .doc(task.id)
-        .set(task)
+        .doc(id)
+        .set({description: description})
         .then((res) => {
           contex.commit("editTask", task);
+          console.log(res)
         })
         .catch((err) => {});
     },

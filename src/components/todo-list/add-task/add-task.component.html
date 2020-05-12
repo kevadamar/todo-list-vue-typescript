@@ -1,3 +1,6 @@
-<v-text-field v-model="description" label="Add New Task" filled outlined shaped dense
-    append-icon="mdi-view-grid-plus-outline" @click:append="addNewTask" @keyup.enter="addNewTask">
-</v-text-field>
+    <div>
+        <v-text-field v-model="description" label="Add New Task" filled outlined shaped dense :rules="[rules.counter]"
+            counter="25" append-icon=" mdi-view-grid-plus-outline" @click:append="addNewTask" @keyup.enter="addNewTask">
+        </v-text-field>
+
+    </div>
