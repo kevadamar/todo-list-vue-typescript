@@ -7,9 +7,9 @@ export default class AddTaskComponent extends Vue {
   description: string = "";
 
   rules: any = {
-    required: (value: string) => !!value || 'Field is Required.',
-    counter: (value: string) => value.length <= 20 || 'Max 20 characters',
-  }
+    required: (value: string) => !!value || "Field is Required.",
+    counter: (value: string) => value.length <= 25 || "Max 25 characters",
+  };
 
   addNewTask() {
     if (this.description.length > 3) {
